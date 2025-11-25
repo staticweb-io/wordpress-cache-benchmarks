@@ -1,0 +1,290 @@
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
+    services-flake.url = "github:juspay/services-flake";
+    systems.url = "github:nix-systems/default";
+    wordpress-flake = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:staticweb-io/wordpress-flake";
+    };
+  };
+  outputs =
+    inputs:
+    let
+      dbName = "wordpress";
+      dbPort = 3306;
+      dbUserName = "wordpress";
+      dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
+      serverPort = 8888;
+      memcachedConfig = {
+        maxMemory = 100;
+        port = 11211;
+      };
+      redisConfig = {
+        maxMemory = memcachedConfig.maxMemory;
+        port = 6379;
+      };
+    in
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import inputs.systems;
+      imports = [ inputs.process-compose-flake.flakeModule ];
+      perSystem =
+        {
+          self',
+          pkgs,
+          config,
+          lib,
+          system,
+          ...
+        }:
+        let
+          getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
+          enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
+          skipPlugins = getEnv "SKIP_PLUGINS" "false" == "true";
+          phpExtensionsName = phpPackage + "Extensions";
+          phpExtensions = pkgs.${phpExtensionsName};
+          phpPackage = getEnv "PHP_PACKAGE" "php";
+          wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
+          phpOptions = ''
+            opcache.interned_strings_buffer = 16
+            opcache.jit = 1255
+            opcache.jit_buffer_size = 8M
+            upload_max_filesize=1024M
+          ''
+          + (
+            if enableXDebug then
+              # Note that /tmp/xd has to be created to receive traces
+              ''
+                xdebug.mode=trace
+                xdebug.output_dir=/tmp/xd
+                xdebug.start_with_request=trigger
+                xdebug.trace_format=3
+                xdebug.trace_output_name=xdebug.trace.%t.%s
+                xdebug.trigger_value=trace
+                zend_extension=${phpExtensions.xdebug}/lib/php/extensions/xdebug.so
+              ''
+            else
+              ""
+          );
+          overlay =
+            self: super:
+            let
+              php = super.${phpPackage}.buildEnv {
+                extraConfig = phpOptions;
+                extensions =
+                  { enabled, all }:
+                  enabled
+                  ++ (
+                    with all;
+                    [
+                      apcu
+                      imagick
+                      memcached
+                      redis
+                    ]
+                    ++ (if enableXDebug then [ xdebug ] else [ ])
+                  );
+              };
+              phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
+                cat ${php}/etc/php.ini > $out
+              '';
+              wp-cli = super.wp-cli.override { phpIniFile = phpIniFile; };
+            in
+            {
+              inherit php wp-cli;
+            };
+          finalPkgs = import pkgs.path {
+            inherit (pkgs) system;
+            overlays = [ overlay ];
+          };
+        in
+        with finalPkgs;
+        let
+          nginxHttpConfig = data-root: phpfpm-socket: ''
+            server {
+              listen ${toString serverPort} default_server;
+
+              server_name _;
+
+              root ${data-root};
+
+              index index.php index.html index.htm;
+
+              client_max_body_size 1024M;
+
+              location / {
+                  try_files $uri $uri/ =404;
+
+                  if (!-e $request_filename) {
+                      rewrite ^(.+)$ /index.php?q=$1 last;
+                  }
+              }
+
+              location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:${phpfpm-socket};
+                include ${pkgs.nginx}/conf/fastcgi.conf;
+              }
+
+              location ~ /\.ht {
+                deny all;
+              }
+            }
+          '';
+          WPConfigFormat =
+            (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
+              inherit pkgs lib;
+            }).format
+              { };
+          update-wordpress = inputs.wordpress-flake.packages.${system}.update-wordpress;
+          wordpress = inputs.wordpress-flake.packages.${system}.${wordpressPackage};
+          wpConfig =
+            dbHost: dbUserName:
+            inputs.wordpress-flake.lib.${system}.mkWPConfig {
+              inherit pkgs lib;
+              name = "wp-config.php";
+              settings = {
+                DB_HOST = dbHost;
+                DB_NAME = dbName;
+                DB_USER = dbUserName;
+                DB_PASSWORD = dbUserPass;
+                WP_AUTO_UPDATE_CORE = false;
+
+                AUTH_KEY = "A6tr^0=N<QP++W-%/hv1yOZ4]f<3m`/}0(A/UFi6pmy|ZLT)=>e+raWRmgYCs>aK";
+                SECURE_AUTH_KEY = "Vj>>M=2uvzzWw-tqT?]H3RWsG%jTA9EhJKn~F6:8B<So+<A_},Y<RW-U)}/w-0Y+";
+                LOGGED_IN_KEY = "jJCaP}~YG-Se+<WK5g9.@K*^g7*v=_yLyX7+i?{Mc%CcJ|L54u=+*+rW_Uxa{95L";
+                NONCE_KEY = "98.DYg|E,*CV]Rz&#Q{j]?n[!sQji*X9%`Ic_n>NExS<7Sn[SG:`P8)*CqC[G2NF";
+                AUTH_SALT = "*KON9~cuX+lG,Kx6`^5d#kyu5oFt{^~O:[]pB]F745S<B2U*L0aHb;(pEn:kPggf";
+                SECURE_AUTH_SALT = "MV6l72,Yi+y8X`0wm5-T)6T#ZY~Sp;G+e3. ^CHdZ1W_*WY?;9>c}^|:[<j0FkpV";
+                LOGGED_IN_SALT = "Don!4M=(5=Y=*@.NI:bn$V[FZ*a~wyJ:s9p&l@XD{7WzqBDO.3+-#[H>79,rG)Q~";
+                NONCE_SALT = "t={*XeC6q4LZ5:%wo*C3f-sr6g3#Wa}_EMf}Jh$8*P/%4SdK4=0hjjnVa&8yY#-F";
+                WP_CACHE_KEY_SALT = ")O~B@EKC(tfdgDg6R8@6;ePxJJkXMpZ&.u?X{j##:@7-,/*YKvvl-l4}r^@2=Ha-";
+
+                WP_CACHE = true;
+                HTTP_HOST = WPConfigFormat.lib.mkInline ''
+                  if ( defined( 'WP_CLI' ) ) {
+                      $_SERVER['HTTP_HOST'] = isset( $_ENV['HTTP_HOST'] ) ? $_ENV['HTTP_HOST'] : 'localhost:${toString serverPort}';
+                  }
+                '';
+                WP_HOME = WPConfigFormat.lib.mkInline ''
+                  if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                      define( 'WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                  } else {
+                      define( 'WP_HOME', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                  }
+                '';
+                WP_SITEURL = WPConfigFormat.lib.mkInline ''
+                  if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                      define( 'WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                  } else {
+                      define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                  }
+                '';
+              };
+            };
+          wpInstaller =
+            dbHost: dbUser: dataDir:
+            writeShellApplication {
+              name = "wordpress-installer";
+              runtimeInputs = [
+                update-wordpress
+                wp-cli
+              ];
+              text = ''
+                set -eu
+                mkdir -p ${dataDir}
+                cp --no-preserve=mode "${wpConfig dbHost dbUser}" "${dataDir}/wp-config.php"
+                update-wordpress ${dataDir} ${wordpress}
+                cd ${dataDir}
+                wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
+                wp option update permalink_structure "/%postname%/"
+              '';
+            };
+        in
+        with finalPkgs;
+        {
+          # `process-compose.foo` will add a flake package output called "foo".
+          # Therefore, this will add a default package that you can build using
+          # `nix build` and run using `nix run`.
+          process-compose."default" =
+            { config, ... }:
+            {
+              imports = [ inputs.services-flake.processComposeModules.default ];
+              cli = {
+                options = {
+                  no-server = false;
+                };
+              };
+              services.memcached."memcached1" = {
+                enable = true;
+                port = memcachedConfig.port;
+                startArgs = [
+                  "--memory-limit=${toString memcachedConfig.maxMemory}M"
+                  "--port=${toString memcachedConfig.port}"
+                ];
+              };
+              services.mysql."mysql1" = {
+                enable = true;
+                ensureUsers = [
+                  {
+                    name = dbUserName;
+                    password = dbUserPass;
+                    ensurePermissions = {
+                      "${dbName}.*" = "ALL PRIVILEGES";
+                    };
+                  }
+                ];
+                initialDatabases = [ { name = dbName; } ];
+                settings = {
+                  mysqld = {
+                    bind-address = "127.0.0.1";
+                    port = dbPort;
+                    tmpdir = "/tmp";
+                  };
+                };
+              };
+              services.nginx."nginx1" = {
+                enable = true;
+                httpConfig = nginxHttpConfig "./data/wordpress1" "${
+                  config.services.phpfpm."phpfpm1".dataDir
+                }/phpfpm.sock";
+                port = serverPort;
+              };
+              services.phpfpm."phpfpm1" = {
+                enable = true;
+                listen = "phpfpm.sock";
+                extraConfig = {
+                  "catch_workers_output" = "yes";
+                  "pm" = "ondemand";
+                  "pm.max_children" = "64";
+                };
+                package = php;
+                phpOptions = phpOptions;
+              };
+              services.redis."redis1" = {
+                enable = true;
+                port = redisConfig.port;
+                extraConfig = ''
+                  appendfsync no
+                  appendonly no
+                  maxmemory ${toString redisConfig.maxMemory}mb
+                  maxmemory-policy allkeys-lru
+                  no-appendfsync-on-rewrite yes
+                  notify-keyspace-events ""
+                  save ""
+                '';
+              };
+              settings.processes."nginx1".depends_on."phpfpm1".condition = "process_healthy";
+              settings.processes."wordpress1" = {
+                command = "${
+                  wpInstaller "127.0.0.1:${toString dbPort}" dbUserName "./data/wordpress1"
+                }/bin/wordpress-installer";
+                depends_on."memcached1".condition = "process_healthy";
+                depends_on."mysql1-configure".condition = "process_completed";
+              };
+            };
+        };
+    };
+}
