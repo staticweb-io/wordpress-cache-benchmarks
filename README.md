@@ -59,9 +59,7 @@ The available benchmarks are:
 
 [SQLite Object Cache](https://wordpress.org/plugins/sqlite-object-cache/):
 - `sqlite-object-cache` default configuration without APCu cache
-
-**Note:** SQLite Object Cache has a very performant APCu cache mode,
-but it is not benchmarked because I can't reliably configure it using WP-CLI.
+- `sqlite-object-cache-apcu` with APCu cache
 
 [WP Redis](https://wordpress.org/plugins/wp-redis/):
 - `wp-redis`

@@ -90,7 +90,6 @@ SQLITE_OBJECT_CACHE="$(nix build .#sqlite-object-cache --print-out-paths)"
 eval "$COMMON_SETUP"
 wp plugin install --force "$SQLITE_OBJECT_CACHE"
 wp plugin activate sqlite-object-cache
-wp option update sqlite_object_cache_settings --format=json "$SQLITE_OBJECT_CACHE_SETTINGS"
 wp cache flush
 wp sqlite-object-cache flush
 """
@@ -125,10 +124,17 @@ tags = ["memcached", "snapcache"]
 
 [commands.sqlite-object-cache]
 setup = """
-export SQLITE_OBJECT_CACHE_SETTINGS='{"target_size":"16","samplerate":"1","retainmeasurements":"2","use_apcu":"off"}'
 eval "$SQLITE_OBJECT_CACHE_SETUP"
+wp config set --raw WP_SQLITE_OBJECT_CACHE_APCU false --anchor=EOF
 """
 tags = ["sqlite"]
+
+[commands.sqlite-object-cache-apcu]
+setup = """
+eval "$SQLITE_OBJECT_CACHE_SETUP"
+wp config set --raw WP_SQLITE_OBJECT_CACHE_APCU true --anchor=EOF
+"""
+tags = ["apcu", "sqlite"]
 
 [commands.wp-redis]
 setup = """eval "$WP_REDIS_SETUP" """
