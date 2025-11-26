@@ -112,7 +112,7 @@ tags = ["memcached"]
 setup = """eval "$LITESPEED_CACHE_REDIS_SETUP" """
 tags = ["redis"]
 
-[commands.no-object-cache]
+[commands.no-plugins]
 setup = """eval "$COMMON_SETUP" """
 
 [commands.redis-cache]
