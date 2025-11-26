@@ -83,6 +83,7 @@
                       imagick
                       memcached
                       redis
+                      sqlite3
                     ]
                     ++ (if enableXDebug then [ xdebug ] else [ ])
                   );

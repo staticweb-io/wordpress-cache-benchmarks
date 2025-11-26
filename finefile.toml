@@ -85,6 +85,14 @@ wp plugin activate snapcache
 wp snapcache memcached install --force
 wp cache flush
 """
+SQLITE_OBJECT_CACHE_SETUP = """
+SQLITE_OBJECT_CACHE="$(nix build .#sqlite-object-cache --print-out-paths)"
+eval "$COMMON_SETUP"
+wp plugin install --force "$SQLITE_OBJECT_CACHE"
+wp plugin activate sqlite-object-cache
+wp cache flush
+wp sqlite-object-cache flush
+"""
 WPDIR = "dev/data/wordpress1"
 WP_REDIS_SETUP = """
 WP_REDIS="$(nix build .#wp-redis --print-out-paths)"
@@ -113,6 +121,20 @@ tags = ["redis"]
 [commands.snapcache-memcached]
 setup = """eval "$SNAPCACHE_SETUP" """
 tags = ["memcached", "snapcache"]
+
+[commands.sqlite-object-cache]
+setup = """
+eval "$SQLITE_OBJECT_CACHE_SETUP"
+wp option set sqlite_object_cache_settings 'a:4:{s:8:"use_apcu";s:3:"off";s:11:"target_size";i:4;s:10:"samplerate";i:10;s:18:"retainmeasurements";i:2;}'
+"""
+tags = ["sqlite"]
+
+[commands.sqlite-object-cache-apcu]
+setup = """
+eval "$SQLITE_OBJECT_CACHE_SETUP"
+wp option set sqlite_object_cache_settings 'a:4:{s:8:"use_apcu";s:2:"on";s:11:"target_size";i:4;s:10:"samplerate";i:10;s:18:"retainmeasurements";i:2;}'
+"""
+tags = ["apcu", "sqlite"]
 
 [commands.wp-redis]
 setup = """eval "$WP_REDIS_SETUP" """
