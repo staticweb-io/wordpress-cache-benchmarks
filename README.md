@@ -1,5 +1,10 @@
 # WordPress Cache Benchmarks
 
+Benchmarks for object cache plugins.
+For plugins that have other options like page caches and acceleration,
+those are disabled in the benchmarks.
+We benchmark only the plugin with its object cache.
+
 ## Running Benchmarks
 
 Running the benchmarks requires installing
@@ -27,3 +32,36 @@ WordPress will be available at http://locahost:8888/wp-admin/
 ## Editing Benchmarks
 
 Benchmarks are defined in [finefile.toml](./finefile.toml).
+
+## Benchmarks
+
+The default configuration performs 500 requests to a random selection
+of pages on a default install of WordPress.
+This is chosen as a neutral baseline and a reality check,
+but note that it is not representative of real usage.
+It gives an abnormal advantage to the `no-plugins` benchmark,
+and heavily punishes the overhead of the plugins.
+
+The available benchmarks are:
+
+[WordPress](https://wordpress.org)'s built-in object cache:
+- `no-plugins`
+
+[LiteSpeed Cache](https://wordpress.org/plugins/litespeed-cache/), an all-in-one acceleration and caching plugin. The page cache is disabled so that we test only the object cache:
+- `litespeed-memcached` configured with memcached backend
+- `litespeed-redis` configured with redis backend
+
+[Redis Cache](https://wordpress.org/plugins/redis-cache/):
+- `redis-cache`
+
+[SnapCache](https://github.com/staticweb-io/snapcache/):
+- `snapcache-memcached` configured with memcached backend
+
+[SQLite Object Cache](https://wordpress.org/plugins/sqlite-object-cache/):
+- `sqlite-object-cache` default configuration without APCu cache
+
+**Note:** SQLite Object Cache has a very performant APCu cache mode,
+but it is not benchmarked because I can't reliably configure it using WP-CLI.
+
+[WP Redis](https://wordpress.org/plugins/wp-redis/):
+- `wp-redis`
