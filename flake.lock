@@ -74,11 +74,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763528439,
-        "narHash": "sha256-o/2kooC7IIRuTDk5zUttSplg7gRReNqe+lAreBAmBdM=",
+        "lastModified": 1764181104,
+        "narHash": "sha256-M5rOE6h3MkPnomt5TMa9ptYBATFnJg+CBM4r3a3pUQs=",
         "owner": "john-shaffer",
         "repo": "finefile",
-        "rev": "7e033aa5bdb55b5813039fa92176264e76fcaffb",
+        "rev": "1e35f1dfae17da52d42f13913c0f4a7436af0ccc",
         "type": "github"
       },
       "original": {
