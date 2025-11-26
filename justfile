@@ -17,7 +17,7 @@ bench *args:
 [working-directory('dev')]
 dev CLEAN="false" XDEBUG="false":
     {{ if CLEAN == "true" { "rm -rf data" } else { "" } }}
-    {{ if XDEBUG == "true" { "ENABLE_XDEBUG=true nix run . --impure -- --no-server" } else { "nix run . -- --no-server" } }}
+    {{ if XDEBUG == "true" { "ENABLE_XDEBUG=true nix run . --impure" } else { "nix run" } }}
 
 # Format source and then check for unfixable issues
 format:
