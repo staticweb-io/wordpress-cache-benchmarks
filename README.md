@@ -7,6 +7,9 @@ Running the benchmarks requires installing
 You can enter a development shell via `nix develop`,
 or automatically using [direnv](https://direnv.net/).
 
+You should run the benchmarks in a disposable VM with no access
+to secrets.
+
 After starting a development shell,
 you can run the benchmarks via `just bench`.
 This runs a series of 500 random requests using each
