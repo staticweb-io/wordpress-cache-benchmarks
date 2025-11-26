@@ -285,6 +285,12 @@
                 depends_on."mysql1-configure".condition = "process_completed";
               };
             };
+          devShells.default = pkgs.mkShell {
+            buildInputs = [
+              php
+              wp-cli
+            ];
+          };
         };
     };
 }

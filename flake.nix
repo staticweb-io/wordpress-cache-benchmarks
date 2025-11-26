@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    dev.url = ./dev;
     finefile = {
       url = "github:john-shaffer/finefile";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,8 +50,8 @@
             omnix
             parallel
             siege
-            wp-cli
           ];
+          inputsFrom = [ inputs.dev.devShells.${system}.default ];
           shellHook = ''
             echo
             echo -e "Run '\033[1mjust <recipe>\033[0m' to get started"
