@@ -346,11 +346,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764102022,
-        "narHash": "sha256-POzkMkwDubWCGa6BCpWls/xDhOB6tBbUd0kX5C4YCvM=",
+        "lastModified": 1764132981,
+        "narHash": "sha256-AKCfRbvolEN2C1bENM2N9Ku9387qYl4hkXIGXeer4Pg=",
         "owner": "staticweb-io",
         "repo": "snapcache",
-        "rev": "87af21912cc18fb85138e85faefa735c47cf3fec",
+        "rev": "5724878f66760f3d6a9eae3df118ed547dcf6f95",
         "type": "github"
       },
       "original": {
