@@ -130,13 +130,6 @@ eval "$SQLITE_OBJECT_CACHE_SETUP"
 """
 tags = ["sqlite"]
 
-[commands.sqlite-object-cache-apcu]
-setup = """
-export SQLITE_OBJECT_CACHE_SETTINGS='{"target_size":"16","samplerate":"1","retainmeasurements":"2","use_apcu":"on"}'
-eval "$SQLITE_OBJECT_CACHE_SETUP"
-"""
-tags = ["apcu", "sqlite"]
-
 [commands.wp-redis]
 setup = """eval "$WP_REDIS_SETUP" """
 tags = ["redis"]
