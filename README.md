@@ -17,3 +17,9 @@ plugin and each backend that that plugin supports.
 
 You can run specific benchmarks via `just bench -c <name>`.
 See `finefile --help` for a full list of options.
+
+## Running Dev Environment
+
+You can start a development server with the same setup as
+a benchmark by running `just dev <name>`.
+WordPress will be available at http://locahost:8888/wp-admin/

@@ -15,9 +15,8 @@ bench *args:
 
 # Run development server
 [working-directory('dev')]
-dev CLEAN="false" XDEBUG="false":
-    {{ if CLEAN == "true" { "rm -rf data" } else { "" } }}
-    {{ if XDEBUG == "true" { "ENABLE_XDEBUG=true nix run . --impure" } else { "nix run" } }}
+dev BENCHMARK_NAME:
+    just bench --step setup -c {{ BENCHMARK_NAME }}
 
 # Format source and then check for unfixable issues
 format:
