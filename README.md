@@ -23,3 +23,7 @@ See `finefile --help` for a full list of options.
 You can start a development server with the same setup as
 a benchmark by running `just dev <name>`.
 WordPress will be available at http://locahost:8888/wp-admin/
+
+## Editing Benchmarks
+
+Benchmarks are defined in [finefile.toml](./finefile.toml).
