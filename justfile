@@ -17,6 +17,7 @@ bench *args:
 [working-directory('dev')]
 dev BENCHMARK_NAME:
     just bench --step setup -c {{ BENCHMARK_NAME }}
+    nix run . -- attach
 
 # Format source and then check for unfixable issues
 format:
