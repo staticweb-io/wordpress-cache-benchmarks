@@ -183,18 +183,26 @@ wp config set --raw EAC_OBJECT_CACHE_OPTIMIZE_MEMORY true --anchor=EOF
 tags = ["apcu", "sqlite"]
 
 [commands.litespeed-memcached]
+# Litespeed is consistently slow, so let's spend less time
+# measuring just how slow it is.
+min-runs = 5
 setup = """
 export EXTRA_PHP_EXTENSIONS="memcached"
 eval "$LITESPEED_CACHE_MEMCACHED_SETUP"
 """
 tags = ["memcached"]
+warmup-runs = 1
 
 [commands.litespeed-redis]
+# Litespeed is consistently slow, so let's spend less time
+# measuring just how slow it is.
+min-runs = 5
 setup = """
 export EXTRA_PHP_EXTENSIONS="redis"
 eval "$LITESPEED_CACHE_REDIS_SETUP"
 """
 tags = ["redis"]
+warmup-runs = 1
 
 [commands.no-plugins]
 setup = """eval "$COMMON_SETUP" """
