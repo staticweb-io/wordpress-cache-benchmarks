@@ -2,7 +2,7 @@
   description = "WordPress Cache Benchmarks";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     dev.url = ./dev;
     finefile = {
       url = "github:john-shaffer/finefile";
