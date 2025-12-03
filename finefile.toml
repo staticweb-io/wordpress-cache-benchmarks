@@ -77,6 +77,36 @@ done
 siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
 rm "$URLS"
 """
+CRAWL_PRODUCTS = """
+URLS="$(mktemp)"
+cat > "$URLS" <<EOF
+$SERVER_URL/
+$SERVER_URL/author/user/
+$SERVER_URL/author/user/page/1/
+$SERVER_URL/not-found/
+$SERVER_URL/sample-page/
+$SERVER_URL/shop/
+$SERVER_URL/wp-sitemap.xml
+EOF
+
+for i in {1..63}; do
+    echo "$SERVER_URL/shop/page/$i" >> "$URLS"
+done
+
+for i in {1..20}; do
+    echo "$SERVER_URL/product-category/product-category-$i/" >> "$URLS"
+    for j in {1..5}; do
+        echo "$SERVER_URL/product-category/product-category-$i/page/$j/" >> "$URLS"
+    done
+done
+
+for i in {1..1000}; do
+    echo "$SERVER_URL/product/sample-product-$i/" >> "$URLS"
+done
+
+siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
+rm "$URLS"
+"""
 EAC_OBJECT_CACHE_SETUP = '''
 EAC_OBJECT_CACHE="$(nix build .#eac-object-cache --print-out-paths)"
 eval "$COMMON_SETUP"
@@ -86,6 +116,9 @@ cp wp-content/plugins/eacobjectcache/src/object-cache.php wp-content
 '''
 GENERATE_POSTS = """
 wp --path="$WPDIR" eval-file src/generate-posts.php
+"""
+GENERATE_PRODUCTS = """
+wp --path="$WPDIR" eval-file src/generate-products.php
 """
 GET_HOME_PARALLEL = """
 hey -h2 -n 500 "$SERVER_URL"
@@ -133,6 +166,19 @@ wp redis enable
 wp cache flush
 """
 SERVER_URL = "http://127.0.0.1:8888"
+SETUP_WITH_WOOCOMMERCE = """
+WOOCOMMERCE="$(nix build .#woocommerce --print-out-paths)"
+cd dev
+nix run . -- down || true
+rm -rf data
+SKIP_PLUGINS=true nix run . --impure -- up --detach-on-success --detached-with-tui
+cd ..
+wp --path="$WPDIR" plugin install --force "$WOOCOMMERCE"
+wp --path="$WPDIR" plugin activate woocommerce
+eval "$GENERATE_PRODUCTS"
+cd "$WPDIR"
+wp option update woocommerce_coming_soon no
+"""
 SNAPCACHE_SETUP = """
 SNAPCACHE="$(nix build .#snapcache --print-out-paths)"
 eval "$COMMON_SETUP"

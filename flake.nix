@@ -80,6 +80,10 @@
             url = "https://downloads.wordpress.org/plugin/sqlite-object-cache.1.6.0.zip";
             hash = "sha256-u12SnmEb+ZA7TJL37clnsfzRteB3bHmy6j1217/X1NE=";
           };
+          woocommerce = fetchStableZip {
+            url = "https://downloads.wordpress.org/plugin/woocommerce.10.3.6.zip";
+            hash = "sha256-LVPiSTKAim2F+8S80ir0zjDbxN2g8KrZLWblm5LqzSw=";
+          };
           wp-redis = fetchStableZip {
             url = "https://downloads.wordpress.org/plugin/wp-redis.1.4.6.zip";
             hash = "sha256-bB2xEF+w7o6mb1OzBPJPfnR1EFNNBfT/MkV6l0MrtA8=";
