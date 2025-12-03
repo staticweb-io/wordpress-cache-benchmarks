@@ -63,6 +63,10 @@
             url = "https://downloads.wordpress.org/plugin/atec-cache-apcu.2.3.58.zip";
             hash = "sha256-EQ3O1bdThNVC1t6aDY4pjzhenglXk3dw1NwcoKkl+/4=";
           };
+          eac-object-cache = fetchStableZip {
+            url = "https://downloads.wordpress.org/plugin/eacobjectcache.2.1.2.zip";
+            hash = "sha256-R5LtZ8cbLYOlB8ZSjpABiHAnEKoHknGSqdKprFlWNeY=";
+          };
           litespeed-cache = fetchStableZip {
             url = "https://downloads.wordpress.org/plugin/litespeed-cache.7.6.2.zip";
             hash = "sha256-AduSCRqawoBvb0kVBDiM90mZ9naLhUcbPt3kcHoqlKU=";

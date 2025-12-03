@@ -52,6 +52,13 @@ EOF
 siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
 rm "$URLS"
 """
+EAC_OBJECT_CACHE_SETUP = '''
+EAC_OBJECT_CACHE="$(nix build .#eac-object-cache --print-out-paths)"
+eval "$COMMON_SETUP"
+wp plugin install --force "$EAC_OBJECT_CACHE"
+wp plugin activate eacobjectcache
+cp wp-content/plugins/eacobjectcache/src/object-cache.php wp-content
+'''
 GET_HOME_PARALLEL = """
 hey -h2 -n 500 "$SERVER_URL"
 """
@@ -130,6 +137,22 @@ export EXTRA_PHP_EXTENSIONS="apcu"
 eval "$ATEC_CACHE_APCU_SETUP"
 """
 tags = ["apcu"]
+
+[commands.eac-object-cache-apcu]
+setup = """
+export EXTRA_PHP_EXTENSIONS="apcu"
+eval "$EAC_OBJECT_CACHE_SETUP"
+wp config set --raw EAC_OBJECT_CACHE_USE_DB false --anchor=EOF
+"""
+tags = ["apcu"]
+
+[commands.eac-object-cache-apcu-sqlite-memopt]
+setup = """
+export EXTRA_PHP_EXTENSIONS="apcu sqlite3"
+eval "$EAC_OBJECT_CACHE_SETUP"
+wp config set --raw EAC_OBJECT_CACHE_OPTIMIZE_MEMORY true --anchor=EOF
+"""
+tags = ["apcu", "sqlite"]
 
 [commands.litespeed-memcached]
 setup = """
