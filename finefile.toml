@@ -7,6 +7,27 @@ nix run . -- down || true
 warmup-runs = 2
 
 [defaults.commands.env]
+ATEC_CACHE_APCU_SETUP = '''
+ATEC_CACHE_APCU="$(nix build .#atec-cache-apcu --print-out-paths)"
+eval "$COMMON_SETUP"
+wp plugin install --force "$ATEC_CACHE_APCU"
+wp plugin activate atec-cache-apcu
+
+driver_file="wp-content/plugins/atec-cache-apcu/install/object-cache-driver.inc"
+target="wp-content/object-cache.tmp"
+
+cp wp-content/plugins/atec-cache-apcu/install/object-cache.php "$target"
+
+php -r '
+    $driver = file_get_contents($argv[1]);
+    $driver = str_replace(["<?php\n",">?"], "", $driver);
+    $text = file_get_contents($argv[2]);
+    $text = str_replace("/* OC INSERT DRIVER */", $driver, $text);
+    file_put_contents($argv[2], $text);
+' "$driver_file" "$target"
+
+mv "$target" wp-content/object-cache.php
+'''
 COMMON_SETUP = """
 cd dev
 nix run . -- down || true
@@ -102,6 +123,13 @@ wp plugin activate wp-redis
 wp redis enable
 wp cache flush
 """
+
+[commands.atec-cache-apcu]
+setup = """
+export EXTRA_PHP_EXTENSIONS="apcu"
+eval "$ATEC_CACHE_APCU_SETUP"
+"""
+tags = ["apcu"]
 
 [commands.litespeed-memcached]
 setup = """

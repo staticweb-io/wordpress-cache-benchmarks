@@ -59,6 +59,10 @@
           '';
         };
         packages = {
+          atec-cache-apcu = fetchStableZip {
+            url = "https://downloads.wordpress.org/plugin/atec-cache-apcu.2.3.58.zip";
+            hash = "sha256-EQ3O1bdThNVC1t6aDY4pjzhenglXk3dw1NwcoKkl+/4=";
+          };
           litespeed-cache = fetchStableZip {
             url = "https://downloads.wordpress.org/plugin/litespeed-cache.7.6.2.zip";
             hash = "sha256-AduSCRqawoBvb0kVBDiM90mZ9naLhUcbPt3kcHoqlKU=";
