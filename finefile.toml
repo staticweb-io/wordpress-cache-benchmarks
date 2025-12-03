@@ -104,40 +104,56 @@ wp cache flush
 """
 
 [commands.litespeed-memcached]
-setup = """eval "$LITESPEED_CACHE_MEMCACHED_SETUP" """
+setup = """
+export EXTRA_PHP_EXTENSIONS="memcached"
+eval "$LITESPEED_CACHE_MEMCACHED_SETUP"
+"""
 tags = ["memcached"]
 
 [commands.litespeed-redis]
-setup = """eval "$LITESPEED_CACHE_REDIS_SETUP" """
+setup = """
+export EXTRA_PHP_EXTENSIONS="redis"
+eval "$LITESPEED_CACHE_REDIS_SETUP"
+"""
 tags = ["redis"]
 
 [commands.no-plugins]
 setup = """eval "$COMMON_SETUP" """
 
 [commands.redis-cache]
-setup = """eval "$REDIS_CACHE_SETUP" """
+setup = """
+export EXTRA_PHP_EXTENSIONS="redis"
+eval "$REDIS_CACHE_SETUP"
+"""
 tags = ["redis"]
 
 [commands.snapcache-memcached]
-setup = """eval "$SNAPCACHE_SETUP" """
+setup = """
+export EXTRA_PHP_EXTENSIONS="memcached"
+eval "$SNAPCACHE_SETUP"
+"""
 tags = ["memcached", "snapcache"]
 
 [commands.sqlite-object-cache]
 setup = """
+export EXTRA_PHP_EXTENSIONS="sqlite3"
 eval "$SQLITE_OBJECT_CACHE_SETUP"
-wp config set --raw WP_SQLITE_OBJECT_CACHE_APCU false --anchor=EOF
 """
 tags = ["sqlite"]
 
 [commands.sqlite-object-cache-apcu]
 setup = """
+export EXTRA_PHP_EXTENSIONS="apcu sqlite3"
 eval "$SQLITE_OBJECT_CACHE_SETUP"
 wp config set --raw WP_SQLITE_OBJECT_CACHE_APCU true --anchor=EOF
 """
 tags = ["apcu", "sqlite"]
 
 [commands.wp-redis]
-setup = """eval "$WP_REDIS_SETUP" """
+setup = """
+export EXTRA_PHP_EXTENSIONS="redis"
+eval "$WP_REDIS_SETUP"
+"""
 tags = ["redis"]
 
 [plots.whisker]

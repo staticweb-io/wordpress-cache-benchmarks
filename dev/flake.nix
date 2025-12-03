@@ -41,6 +41,7 @@
         }:
         let
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
+          extraPhpExtensions = getEnv "EXTRA_PHP_EXTENSIONS" "";
           enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
           skipPlugins = getEnv "SKIP_PLUGINS" "false" == "true";
           phpExtensionsName = phpPackage + "Extensions";
@@ -76,17 +77,14 @@
                 extensions =
                   { enabled, all }:
                   enabled
+                  ++ [ all.imagick ]
                   ++ (
-                    with all;
-                    [
-                      apcu
-                      imagick
-                      memcached
-                      redis
-                      sqlite3
-                    ]
-                    ++ (if enableXDebug then [ xdebug ] else [ ])
-                  );
+                    if (extraPhpExtensions == "") then
+                      [ ]
+                    else
+                      (map (name: all.${name}) (lib.splitString " " extraPhpExtensions))
+                  )
+                  ++ (if enableXDebug then [ all.xdebug ] else [ ]);
               };
               phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
                 cat ${php}/etc/php.ini > $out
