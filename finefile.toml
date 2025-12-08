@@ -4,6 +4,7 @@ cleanup = """
 cd dev
 nix run . -- down || true
 """
+export-json = "bench.json"
 warmup-runs = 2
 
 [defaults.commands.env]

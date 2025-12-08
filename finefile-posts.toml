@@ -1,5 +1,6 @@
 [defaults.commands]
 command = """eval "$CRAWL_POSTS" """
+export-json = "bench-posts.json"
 min-runs = 5
 warmup-runs = 1
 
