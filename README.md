@@ -16,12 +16,18 @@ You should run the benchmarks in a disposable VM with no access
 to secrets.
 
 After starting a development shell,
-you can run the benchmarks via `just bench`.
+you can run the default benchmarks via `just bench`.
 This runs a series of 500 random requests using each
 plugin and each backend that that plugin supports.
 
 You can run specific benchmarks via `just bench -c <name>`.
 See `finefile --help` for a full list of options.
+
+### Benchmark setups
+
+- `just bench`: 5000 requests to a default WordPress install
+- `just bench-posts`: 5000 requests to a WordPress install with 1000 posts added
+- `just bench-products`: 5000 requests to a WooCommerce install with 1000 products added
 
 ## Running Dev Environment
 
@@ -33,14 +39,11 @@ WordPress will be available at http://locahost:8888/wp-admin/
 
 Benchmarks are defined in [finefile.toml](./finefile.toml).
 
+Other benchmark setups are based `finefile.toml`, but they override values in [finefile-posts.toml](./finefile-posts.toml) and [finefile-products.toml](./finefile-products.toml).
+
 ## Benchmarks
 
-The default configuration performs 500 requests to a random selection
-of pages on a default install of WordPress.
-This is chosen as a neutral baseline and a reality check,
-but note that it is not representative of real usage.
-It gives an abnormal advantage to the `no-plugins` benchmark,
-and heavily punishes the overhead of the plugins.
+See [benchmark setups](#benchmark-setups) for server configuration options.
 
 The available benchmarks are:
 

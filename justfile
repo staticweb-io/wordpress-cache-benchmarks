@@ -11,7 +11,13 @@ list:
 
 # Run benchmarks
 bench *args:
-    finefile bench {{ args }}
+    finefile bench -f finefile.toml {{ args }}
+
+bench-posts *args:
+    just bench -f finefile-posts.toml {{ args }}
+
+bench-products *args:
+    just bench -f finefile-products.toml {{ args }}
 
 # Run development server
 [working-directory('dev')]
