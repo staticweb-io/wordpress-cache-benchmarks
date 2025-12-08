@@ -74,11 +74,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764564303,
-        "narHash": "sha256-WfZfuAMumwkW08H3/Cbuloust4DDDmzgW9Fmfo59xJc=",
+        "lastModified": 1765223749,
+        "narHash": "sha256-YFKbtwj8RsaYZHW8tjAmquVRnDZwqq3Iy7vwrHwZQKQ=",
         "owner": "john-shaffer",
         "repo": "finefile",
-        "rev": "2a5db5169573ad552f49c2788b154f53af53e3d7",
+        "rev": "7c6df4b73f4d3316bd11699d1000796e908c3f06",
         "type": "github"
       },
       "original": {
@@ -224,11 +224,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1764522689,
-        "narHash": "sha256-SqUuBFjhl/kpDiVaKLQBoD8TLD+/cTUzzgVFoaHrkqY=",
+        "lastModified": 1764983851,
+        "narHash": "sha256-y7RPKl/jJ/KAP/VKLMghMgXTlvNIJMHKskl8/Uuar7o=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "8bb5646e0bed5dbd3ab08c7a7cc15b75ab4e1d0f",
+        "rev": "d9bc5c7dceb30d8d6fafa10aeb6aa8a48c218454",
         "type": "github"
       },
       "original": {
@@ -283,11 +283,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1764522689,
-        "narHash": "sha256-SqUuBFjhl/kpDiVaKLQBoD8TLD+/cTUzzgVFoaHrkqY=",
+        "lastModified": 1764983851,
+        "narHash": "sha256-y7RPKl/jJ/KAP/VKLMghMgXTlvNIJMHKskl8/Uuar7o=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8bb5646e0bed5dbd3ab08c7a7cc15b75ab4e1d0f",
+        "rev": "d9bc5c7dceb30d8d6fafa10aeb6aa8a48c218454",
         "type": "github"
       },
       "original": {
@@ -299,11 +299,11 @@
     },
     "process-compose-flake": {
       "locked": {
-        "lastModified": 1763591764,
-        "narHash": "sha256-fWFTm4t/t44f0NAV2wsmMpqHOYKbAPxkwjtgxqcD1GE=",
+        "lastModified": 1764915241,
+        "narHash": "sha256-vTqn6IAkZhuuctvkxjhzI1EEybyzwaNd7HJvhF662O8=",
         "owner": "Platonic-Systems",
         "repo": "process-compose-flake",
-        "rev": "1a991178ac404862f002170b5f4228b49011f14e",
+        "rev": "36678818ecbd0e06a60740a291c55b683fec79dd",
         "type": "github"
       },
       "original": {
@@ -323,11 +323,11 @@
     },
     "services-flake": {
       "locked": {
-        "lastModified": 1763858867,
-        "narHash": "sha256-hfPtIRWg1lYv45Wx3XS9bGYuUBaZDF978xwuNp68Oa8=",
+        "lastModified": 1765168239,
+        "narHash": "sha256-NZ7H4lbbytPNwe4ZyvovycuS1BMBFwJrptgX7NiF+F0=",
         "owner": "juspay",
         "repo": "services-flake",
-        "rev": "f8608fb57ec97e06171e87db58cf31509a44ecc6",
+        "rev": "8b6244f2b310f229568d5cadf7dfcb5ebe6f8bda",
         "type": "github"
       },
       "original": {
@@ -346,11 +346,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764649578,
-        "narHash": "sha256-smRo1eXVQa7U4rTq8dZBP7up8DO6KoMcrhe0V1tiKJY=",
+        "lastModified": 1765205287,
+        "narHash": "sha256-8FDM/PxFYtEEn00AH0fzJQTVZ1vVqdN8oJN/5NUBBsg=",
         "owner": "staticweb-io",
         "repo": "snapcache",
-        "rev": "f38a2d81d8956cfc3991655f0efcaf564fd50ddd",
+        "rev": "a300bdb5ae271d7e9847e41e3e8877d20454e0aa",
         "type": "github"
       },
       "original": {
@@ -428,11 +428,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1759504514,
-        "narHash": "sha256-p77JaUBjeztO0gmq+7CZbs30/6kj4bpnINAW+IdRJ34=",
+        "lastModified": 1764775627,
+        "narHash": "sha256-7tdJRaEkx6kpcVjzKeNY4TWUHOtwZWOPCWPts8vp1jM=",
         "owner": "staticweb-io",
         "repo": "wordpress-flake",
-        "rev": "37f1fe0e3576b27fbb1aab2beb78f8ad7e2479a1",
+        "rev": "3e9d6bb19cdf6ded31127053e55d1d51382c8d94",
         "type": "github"
       },
       "original": {
