@@ -54,7 +54,7 @@ The available benchmarks are:
 [Redis Cache](https://wordpress.org/plugins/redis-cache/):
 - `redis-cache`
 
-[SnapCache](https://github.com/staticweb-io/snapcache/):
+[SnapCache](https://wordpress.org/plugins/snapcache/):
 - `snapcache-memcached` configured with memcached backend
 
 [SQLite Object Cache](https://wordpress.org/plugins/sqlite-object-cache/):
