@@ -12,7 +12,7 @@ Running the benchmarks requires installing
 You can enter a development shell via `nix develop`,
 or automatically using [direnv](https://direnv.net/).
 
-You should run the benchmarks in a disposable VM with no access
+You should run the benchmarks in a disposable Linux VM with no access
 to secrets.
 
 After starting a development shell,
