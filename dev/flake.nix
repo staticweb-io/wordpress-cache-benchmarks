@@ -18,14 +18,6 @@
       dbUserName = "wordpress";
       dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
       serverPort = 8888;
-      memcachedConfig = {
-        maxMemory = 100;
-        port = 11211;
-      };
-      redisConfig = {
-        maxMemory = memcachedConfig.maxMemory;
-        port = 6379;
-      };
     in
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
@@ -41,6 +33,17 @@
         }:
         let
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
+          memcachedConfig = {
+            maxMemory = lib.toInt (getEnv "WCB_OBJECT_CACHE_MB" "100");
+            port = 11211;
+          };
+          phpFpmConfig = {
+            maxChildren = getEnv "WCB_PHP_FPM_MAX_CHILDREN" "64";
+          };
+          redisConfig = {
+            maxMemory = memcachedConfig.maxMemory;
+            port = 6379;
+          };
           extraPhpExtensions = getEnv "EXTRA_PHP_EXTENSIONS" "";
           enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
           phpExtensionsName = phpPackage + "Extensions";
@@ -256,7 +259,7 @@
                 extraConfig = {
                   "catch_workers_output" = "yes";
                   "pm" = "ondemand";
-                  "pm.max_children" = "64";
+                  "pm.max_children" = phpFpmConfig.maxChildren;
                 };
                 package = php;
                 phpOptions = phpOptions;
