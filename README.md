@@ -48,7 +48,7 @@ See [benchmark setups](#benchmark-setups) for server configuration options.
 The available benchmarks are:
 
 [WordPress](https://wordpress.org)'s built-in object cache:
-- `no-plugins`
+- `no-cache-plugins`
 
 [LiteSpeed Cache](https://wordpress.org/plugins/litespeed-cache/), an all-in-one acceleration and caching plugin. The page cache is disabled so that we test only the object cache:
 - `litespeed-memcached` configured with memcached backend

@@ -177,7 +177,7 @@ eval "$LITESPEED_CACHE_REDIS_SETUP"
 tags = ["redis"]
 warmup-runs = 1
 
-[commands.no-plugins]
+[commands.no-cache-plugins]
 setup = """eval "$COMMON_SETUP" """
 
 [commands.redis-cache]
