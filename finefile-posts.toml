@@ -9,7 +9,7 @@ COMMON_SETUP = """
 cd dev
 nix run . -- down || true
 rm -rf data
-SKIP_PLUGINS=true nix run . --impure -- up --detach-on-success --detached-with-tui
+nix run . --impure -- up --detach-on-success --detached-with-tui
 cd ..
 eval "$GENERATE_POSTS"
 cd "$WPDIR"

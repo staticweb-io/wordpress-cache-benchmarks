@@ -43,7 +43,6 @@
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
           extraPhpExtensions = getEnv "EXTRA_PHP_EXTENSIONS" "";
           enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
-          skipPlugins = getEnv "SKIP_PLUGINS" "false" == "true";
           phpExtensionsName = phpPackage + "Extensions";
           phpExtensions = pkgs.${phpExtensionsName};
           phpPackage = getEnv "PHP_PACKAGE" "php";

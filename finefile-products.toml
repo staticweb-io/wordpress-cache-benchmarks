@@ -10,7 +10,7 @@ WOOCOMMERCE="$(nix build .#woocommerce --print-out-paths)"
 cd dev
 nix run . -- down || true
 rm -rf data
-SKIP_PLUGINS=true nix run . --impure -- up --detach-on-success --detached-with-tui
+nix run . --impure -- up --detach-on-success --detached-with-tui
 cd ..
 wp --path="$WPDIR" plugin install --force "$WOOCOMMERCE"
 wp --path="$WPDIR" plugin activate woocommerce
