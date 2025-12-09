@@ -15,10 +15,12 @@ cd ..
 wp --path="$WPDIR" plugin install --force "$WOOCOMMERCE"
 wp --path="$WPDIR" plugin activate woocommerce
 eval "$GENERATE_PRODUCTS"
-cd "$WPDIR"
+pushd "$WPDIR"
 wp option update woocommerce_coming_soon no
 """
 CRAWL_PRODUCTS = """
+popd
+
 URLS="$(mktemp)"
 cat > "$URLS" <<EOF
 $SERVER_URL/
@@ -45,7 +47,10 @@ for i in {1..1000}; do
     echo "$SERVER_URL/product/sample-product-$i/" >> "$URLS"
 done
 
-siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
+php src/scramble-lines-zipf.php "$URLS" 5000 < "$URLS" > "$URLS.tmp"
+mv "$URLS.tmp" "$URLS"
+
+siege --benchmark --no-parser -c 50 -r 100 -f "$URLS"
 rm "$URLS"
 """
 GENERATE_PRODUCTS = """

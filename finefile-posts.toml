@@ -12,9 +12,11 @@ rm -rf data
 nix run . --impure -- up --detach-on-success --detached-with-tui
 cd ..
 eval "$GENERATE_POSTS"
-cd "$WPDIR"
+pushd "$WPDIR"
 """
 CRAWL_POSTS = """
+popd
+
 URLS="$(mktemp)"
 cat > "$URLS" <<EOF
 $SERVER_URL/
@@ -36,7 +38,10 @@ for i in {1..1000}; do
     echo "$SERVER_URL/sample-post-$i/" >> "$URLS"
 done
 
-siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
+php src/scramble-lines-zipf.php "$URLS" 5000 < "$URLS" > "$URLS.tmp"
+mv "$URLS.tmp" "$URLS"
+
+siege --benchmark --no-parser -c 50 -r 100 -f "$URLS"
 rm "$URLS"
 """
 GENERATE_POSTS = """
