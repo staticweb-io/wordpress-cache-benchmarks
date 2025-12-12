@@ -17,7 +17,7 @@ to secrets.
 
 After starting a development shell,
 you can run the default benchmarks via `just bench`.
-This runs a series of 500 random requests using each
+This runs a series of 5000 random requests using each
 plugin and each backend that that plugin supports.
 
 You can run specific benchmarks via `just bench -c <name>`.
