@@ -47,7 +47,6 @@
             port = 6379;
           };
           extraPhpExtensions = lib.splitString " " (getEnv "EXTRA_PHP_EXTENSIONS" "");
-          enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
           phpExtensionsName = phpPackage + "Extensions";
           phpExtensions = pkgs.${phpExtensionsName};
           phpPackage = getEnv "PHP_PACKAGE" "php";
@@ -59,7 +58,7 @@
             upload_max_filesize=1024M
           ''
           + (
-            if enableXDebug then
+            if builtins.elem "xdebug" extraPhpExtensions then
               # Note that /tmp/xd has to be created to receive traces
               ''
                 xdebug.mode=trace
@@ -82,8 +81,7 @@
                   { enabled, all }:
                   enabled
                   ++ [ all.imagick ]
-                  ++ (if (extraPhpExtensions == [ "" ]) then [ ] else (map (name: all.${name}) extraPhpExtensions))
-                  ++ (if enableXDebug then [ all.xdebug ] else [ ]);
+                  ++ (if (extraPhpExtensions == [ "" ]) then [ ] else (map (name: all.${name}) extraPhpExtensions));
               };
               phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
                 cat ${php}/etc/php.ini > $out
