@@ -2,6 +2,7 @@
 command = """eval "$CRAWL_PRODUCTS" """
 export-json = "bench-products.json"
 min-runs = 5
+timeout-seconds = 2400
 warmup-runs = 1
 
 [defaults.commands.env]

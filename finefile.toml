@@ -5,6 +5,7 @@ cd dev
 nix run . -- down || true
 """
 export-json = "bench.json"
+timeout-seconds = 1200
 warmup-runs = 2
 
 [defaults.commands.env]
