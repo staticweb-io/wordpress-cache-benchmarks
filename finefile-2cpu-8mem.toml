@@ -1,0 +1,5 @@
+# Config for machines with 2 CPU and 8 GB RAM
+
+[defaults.commands.env]
+WCB_OBJECT_CACHE_MB = 6144
+WCB_PHP_FPM_MAX_CHILDREN = 8
