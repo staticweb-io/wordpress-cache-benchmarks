@@ -277,6 +277,7 @@
                 command = "${
                   wpInstaller "127.0.0.1:${toString dbPort}" dbUserName "./data/wordpress1"
                 }/bin/wordpress-installer";
+                depends_on."mysql1".condition = "process_healthy";
                 depends_on."mysql1-configure".condition = "process_completed";
               }
               // (
