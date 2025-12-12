@@ -34,6 +34,7 @@
         let
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
           memcachedConfig = {
+            enable = builtins.elem "memcached" extraPhpExtensions;
             maxMemory = lib.toInt (getEnv "WCB_OBJECT_CACHE_MB" "100");
             port = 11211;
           };
@@ -41,10 +42,11 @@
             maxChildren = getEnv "WCB_PHP_FPM_MAX_CHILDREN" "64";
           };
           redisConfig = {
+            enable = builtins.elem "redis" extraPhpExtensions;
             maxMemory = memcachedConfig.maxMemory;
             port = 6379;
           };
-          extraPhpExtensions = getEnv "EXTRA_PHP_EXTENSIONS" "";
+          extraPhpExtensions = lib.splitString " " (getEnv "EXTRA_PHP_EXTENSIONS" "");
           enableXDebug = getEnv "ENABLE_XDEBUG" "false" == "true";
           phpExtensionsName = phpPackage + "Extensions";
           phpExtensions = pkgs.${phpExtensionsName};
@@ -80,12 +82,7 @@
                   { enabled, all }:
                   enabled
                   ++ [ all.imagick ]
-                  ++ (
-                    if (extraPhpExtensions == "") then
-                      [ ]
-                    else
-                      (map (name: all.${name}) (lib.splitString " " extraPhpExtensions))
-                  )
+                  ++ (if (extraPhpExtensions == [ "" ]) then [ ] else (map (name: all.${name}) extraPhpExtensions))
                   ++ (if enableXDebug then [ all.xdebug ] else [ ]);
               };
               phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
@@ -219,7 +216,7 @@
                 };
               };
               services.memcached."memcached1" = {
-                enable = true;
+                enable = memcachedConfig.enable;
                 port = memcachedConfig.port;
                 startArgs = [
                   "--memory-limit=${toString memcachedConfig.maxMemory}M"
@@ -265,7 +262,7 @@
                 phpOptions = phpOptions;
               };
               services.redis."redis1" = {
-                enable = true;
+                enable = redisConfig.enable;
                 port = redisConfig.port;
                 extraConfig = ''
                   appendfsync no
@@ -282,9 +279,12 @@
                 command = "${
                   wpInstaller "127.0.0.1:${toString dbPort}" dbUserName "./data/wordpress1"
                 }/bin/wordpress-installer";
-                depends_on."memcached1".condition = "process_healthy";
                 depends_on."mysql1-configure".condition = "process_completed";
-              };
+              }
+              // (
+                if memcachedConfig.enable then { depends_on."memcached1".condition = "process_healthy"; } else { }
+              )
+              // (if redisConfig.enable then { depends_on."redis1".condition = "process_healthy"; } else { });
             };
           devShells.default = pkgs.mkShell {
             buildInputs = [
