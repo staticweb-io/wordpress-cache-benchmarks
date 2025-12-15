@@ -1,4 +1,6 @@
 # Config for machines with 1 CPU and 2 GB RAM
+[defaults.commands]
+timeout-seconds = 1800
 
 [defaults.commands.env]
 WCB_OBJECT_CACHE_MB = 812
