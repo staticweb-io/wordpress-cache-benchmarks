@@ -130,7 +130,7 @@
             }
           '';
           WPConfigFormat =
-            (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
+            (inputs.wordpress-flake.lib.WPConfigFormat {
               inherit pkgs lib;
             }).format
               { };
@@ -138,7 +138,7 @@
           wordpress = inputs.wordpress-flake.packages.${system}.${wordpressPackage};
           wpConfig =
             dbHost: dbUserName:
-            inputs.wordpress-flake.lib.${system}.mkWPConfig {
+            inputs.wordpress-flake.lib.mkWPConfig {
               inherit pkgs lib;
               name = "wp-config.php";
               settings = {
