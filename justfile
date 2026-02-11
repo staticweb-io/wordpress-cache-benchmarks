@@ -2,7 +2,7 @@ repo_root := `pwd`
 wordpress_dir := "./dev/data/wordpress1"
 
 alias fmt := format
-alias u := update-deps
+alias u := update
 
 [private]
 list:
@@ -33,7 +33,7 @@ format:
     fd "finefile\.toml" -x finefile format
 
 # Upgrade dependencies
-update-deps: _update-flakes
+update: _update-flakes
 
 _update-flakes:
     nix flake update
