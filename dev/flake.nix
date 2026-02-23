@@ -277,13 +277,13 @@
                 command = "${
                   wpInstaller "127.0.0.1:${toString dbPort}" dbUserName "./data/wordpress1"
                 }/bin/wordpress-installer";
-                depends_on."mysql1".condition = "process_healthy";
-                depends_on."mysql1-configure".condition = "process_completed";
-              }
-              // (
-                if memcachedConfig.enable then { depends_on."memcached1".condition = "process_healthy"; } else { }
-              )
-              // (if redisConfig.enable then { depends_on."redis1".condition = "process_healthy"; } else { });
+                depends_on = {
+                  "mysql1".condition = "process_healthy";
+                  "mysql1-configure".condition = "process_completed";
+                }
+                // (if memcachedConfig.enable then { "memcached1".condition = "process_healthy"; } else { })
+                // (if redisConfig.enable then { "redis1".condition = "process_healthy"; } else { });
+              };
             };
           devShells.default = pkgs.mkShell {
             buildInputs = [
