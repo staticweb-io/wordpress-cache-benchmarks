@@ -54,6 +54,13 @@ EOF
 siege --benchmark --no-parser --internet -c 50 -r 100 -f "$URLS"
 rm "$URLS"
 """
+DOCKET_CACHE_SETUP = '''
+DOCKET_CACHE="$(nix build .#docket-cache --print-out-paths)"
+eval "$COMMON_SETUP"
+wp plugin install --force "$DOCKET_CACHE"
+wp plugin activate docket-cache
+wp cache dropin:enable
+'''
 EAC_OBJECT_CACHE_SETUP = '''
 EAC_OBJECT_CACHE="$(nix build .#eac-object-cache --print-out-paths)"
 eval "$COMMON_SETUP"
@@ -139,6 +146,12 @@ export EXTRA_PHP_EXTENSIONS="apcu"
 eval "$ATEC_CACHE_APCU_SETUP"
 """
 tags = ["apcu"]
+
+[commands.docket-cache]
+setup = """
+eval "$DOCKET_CACHE_SETUP"
+"""
+tags = ["opcache"]
 
 [commands.eac-object-cache-apcu]
 setup = """
