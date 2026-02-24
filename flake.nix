@@ -42,7 +42,6 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             fd
-            hey
             inputs.finefile.packages.${system}.default
             jsonfmt
             just

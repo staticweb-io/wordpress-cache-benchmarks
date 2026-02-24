@@ -68,9 +68,6 @@ wp plugin install --force "$EAC_OBJECT_CACHE"
 wp plugin activate eacobjectcache
 cp wp-content/plugins/eacobjectcache/src/object-cache.php wp-content
 '''
-GET_HOME_PARALLEL = """
-hey -h2 -n 500 "$SERVER_URL"
-"""
 LITESPEED_CACHE_SETUP = """
 LITESPEED_CACHE="$(nix build .#litespeed-cache --print-out-paths)"
 eval "$COMMON_SETUP"
